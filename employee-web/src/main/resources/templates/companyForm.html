@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{_layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Company Form | Employee Manager</title>
+</head>
+<body>
+<section layout:fragment="content" class="container py-4">
+    <h1 class="mb-4" th:text="${company.id == null} ? 'Add Company' : 'Edit Company'">Company Form</h1>
+
+    <form class="card card-body shadow-sm form-card" th:action="@{/companies/save}"
+          th:object="${company}" method="post">
+        <input type="hidden" th:field="*{id}">
+
+        <div class="mb-3">
+            <label for="name" class="form-label">Name</label>
+            <input id="name" class="form-control" type="text" th:field="*{name}">
+            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('name')}"
+                 th:errors="*{name}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="image" class="form-label">Image URL</label>
+            <input id="image" class="form-control" type="text" th:field="*{image}"
+                   placeholder="https://example.com/company-logo.png">
+            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('image')}"
+                 th:errors="*{image}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="address" class="form-label">Address</label>
+            <input id="address" class="form-control" type="text" th:field="*{address}">
+            <div class="invalid-feedback d-block" th:if="${#fields.hasErrors('address')}"
+                 th:errors="*{address}"></div>
+        </div>
+
+        <div class="d-flex gap-2">
+            <button class="btn btn-primary" type="submit">Save</button>
+            <a class="btn btn-outline-secondary" th:href="@{/companies}">Cancel</a>
+        </div>
+    </form>
+</section>
+</body>
+</html>

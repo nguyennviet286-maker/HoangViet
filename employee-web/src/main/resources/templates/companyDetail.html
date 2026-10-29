@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{_layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Company Details | Employee Manager</title>
+</head>
+<body>
+<section layout:fragment="content" class="container py-4">
+    <a class="d-inline-block mb-3" th:href="@{/companies}">&larr; Back to companies</a>
+    <h1 class="h3 text-primary text-uppercase text-center mb-4">Company Detail</h1>
+
+    <div class="card border-0 bg-light mx-auto" style="max-width: 760px;">
+        <div class="card-body p-4">
+            <div class="row g-4 align-items-center">
+                <div class="col-md-6 text-center">
+                    <img th:if="${company.image != null and !#strings.isEmpty(company.image)}"
+                         th:src="${company.image}" th:alt="${company.name} + ' logo'"
+                         class="img-fluid" style="max-width: 280px; max-height: 220px; object-fit: contain;">
+                    <div th:if="${company.image == null or #strings.isEmpty(company.image)}"
+                         class="border rounded d-flex align-items-center justify-content-center text-secondary mx-auto"
+                         style="width: 220px; height: 180px;">No image available</div>
+                </div>
+                <div class="col-md-6 text-center text-md-start">
+                    <h2 class="h3 text-success" th:text="${company.name}">Company name</h2>
+                    <p class="mb-2"><strong>Address:</strong> <span th:text="${company.address}">Address</span></p>
+                    <h3 class="h5 mt-3">Employee List:</h3>
+                    <p th:if="${#lists.isEmpty(employees)}" class="text-secondary mb-0">
+                        No employees are assigned to this company.
+                    </p>
+                    <ul th:unless="${#lists.isEmpty(employees)}" class="list-unstyled mb-0">
+                        <li th:each="employee : ${employees}">
+                            <a th:href="@{/employees/{id}(id=${employee.id})}"
+                               th:text="${employee.name}">Employee name</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

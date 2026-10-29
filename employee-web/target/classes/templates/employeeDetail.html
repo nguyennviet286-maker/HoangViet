@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{_layout}">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Employee Details | Employee Manager</title>
+</head>
+
+<body>
+<section layout:fragment="content" class="container py-4">
+
+    <a class="d-inline-block mb-3"
+       th:href="@{/employees}">
+        &larr; Back to employee list
+    </a>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-4">
+            <div class="row g-4 align-items-start">
+
+                <div class="col-md-4 text-center">
+                    <img th:if="${employee.image != null and !#strings.isEmpty(employee.image)}"
+                         th:src="${employee.image}"
+                         alt="Employee photo"
+                         class="img-fluid rounded"
+                         style="max-width: 280px; max-height: 320px; object-fit: cover;">
+
+                    <div th:if="${employee.image == null or #strings.isEmpty(employee.image)}"
+                         class="border rounded d-flex align-items-center justify-content-center text-secondary mx-auto"
+                         style="width: 220px; height: 220px;">
+                        No image available
+                    </div>
+                </div>
+
+                <div class="col-md-8">
+                    <h1 class="mb-4" th:text="${employee.name}">Employee Name</h1>
+
+                    <dl class="row">
+                        <dt class="col-sm-3">ID</dt>
+                        <dd class="col-sm-9" th:text="${employee.id}">1</dd>
+
+                        <dt class="col-sm-3">Age</dt>
+                        <dd class="col-sm-9" th:text="${employee.age}">25</dd>
+
+                        <dt class="col-sm-3">Address</dt>
+                        <dd class="col-sm-9" th:text="${employee.address}">Address</dd>
+
+                        <dt class="col-sm-3" th:if="${employee.company != null}">Company</dt>
+                        <dd class="col-sm-9" th:if="${employee.company != null}">
+                            <a th:href="@{/companies/{id}(id=${employee.company.id})}"
+                               th:text="${employee.company.name}">Company name</a>
+                        </dd>
+                    </dl>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</section>
+</body>
+</html>

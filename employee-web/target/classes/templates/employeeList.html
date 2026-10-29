@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{_layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Employee List | Employee Manager</title>
+</head>
+<body>
+<section layout:fragment="content" class="container py-4">
+    <div class="text-center mb-4">
+        <h1 class="h3 text-primary text-uppercase">Employee List</h1>
+        <a sec:authorize="hasRole('ADMIN')" class="btn btn-success rounded-circle mt-2"
+           th:href="@{/employees/new}" aria-label="Add employee" title="Add employee">+</a>
+    </div>
+
+    <div class="mx-auto" style="max-width: 820px;">
+        <form class="d-flex gap-2 mb-3" th:action="@{/employees/search}" method="get">
+            <label class="visually-hidden" for="searchName">Search by name</label>
+            <input id="searchName" name="name" type="search" class="form-control"
+                   style="max-width: 240px" placeholder="Search by name" th:value="${searchName}">
+            <button class="btn btn-outline-primary" type="submit">Search</button>
+            <a class="btn btn-outline-secondary" th:href="@{/employees}">Clear</a>
+        </form>
+
+        <div class="table-responsive">
+            <table class="table table-info table-hover align-middle text-center">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col" class="text-nowrap">
+                        Name
+                        <a class="btn btn-success btn-sm rounded-circle ms-1 py-0 px-2"
+                           th:href="@{/employees/sort/asc}" aria-label="Sort name ascending" title="A to Z">↑</a>
+                        <a class="btn btn-success btn-sm rounded-circle ms-1 py-0 px-2"
+                           th:href="@{/employees/sort/desc}" aria-label="Sort name descending" title="Z to A">↓</a>
+                    </th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Company</th>
+                    <th scope="col" sec:authorize="hasRole('ADMIN')">Update</th>
+                    <th scope="col" sec:authorize="hasRole('ADMIN')">Delete</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="employee : ${employees}">
+                    <td th:text="${employee.id}">1</td>
+                    <td><a th:href="@{/employees/{id}(id=${employee.id})}"
+                           th:text="${employee.name}">Employee name</a></td>
+                    <td>
+                        <img th:if="${employee.image != null and !#strings.isEmpty(employee.image)}"
+                             th:src="${employee.image}" alt="Employee photo"
+                             style="width: 80px; height: 80px; object-fit: cover;">
+                        <span th:if="${employee.image == null or #strings.isEmpty(employee.image)}"
+                              class="text-secondary">No image</span>
+                    </td>
+                    <td>
+                        <a th:if="${employee.company != null}"
+                           th:href="@{/companies/{id}(id=${employee.company.id})}"
+                           th:text="${employee.company.name}">Company</a>
+                        <span th:if="${employee.company == null}" class="text-secondary">—</span>
+                    </td>
+                    <td sec:authorize="hasRole('ADMIN')">
+                        <a class="btn btn-link p-1 text-info" style="line-height: 1"
+                           th:href="@{/employees/{id}/edit(id=${employee.id})}"
+                           th:aria-label="'Edit ' + ${employee.name}" title="Edit">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
+                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M12 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10"/>
+                                <path d="m16 3 5 5L10 19l-5 1 1-5L16 3Z"/>
+                            </svg>
+                        </a>
+                    </td>
+                    <td sec:authorize="hasRole('ADMIN')">
+                        <form class="m-0" th:action="@{/employees/{id}/delete(id=${employee.id})}" method="post">
+                            <button class="btn btn-link p-1 text-primary" style="line-height: 1" type="submit"
+                                    th:aria-label="'Delete ' + ${employee.name}" title="Delete"
+                                    onclick="return confirm('Delete this employee?');">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
+                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6"/>
+                                <path d="M10 10v6m4-6v6"/>
+                            </svg>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(employees)}">
+                    <td colspan="6" class="text-center text-secondary py-4">No employees found.</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+</body>
+</html>

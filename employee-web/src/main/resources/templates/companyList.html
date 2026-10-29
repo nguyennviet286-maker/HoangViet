@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      layout:decorate="~{_layout}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Company List | Employee Manager</title>
+</head>
+<body>
+<section layout:fragment="content" class="container py-4">
+    <div class="text-center mb-4">
+        <h1 class="h3 text-primary text-uppercase">Company List</h1>
+        <a sec:authorize="hasRole('ADMIN')" class="btn btn-success rounded-circle mt-2"
+           th:href="@{/companies/new}" aria-label="Add company" title="Add company">+</a>
+    </div>
+
+    <div class="table-responsive mx-auto" style="max-width: 760px;">
+        <table class="table table-info table-hover align-middle text-center">
+            <thead class="table-light">
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Name</th>
+                <th scope="col">Image</th>
+                <th scope="col" sec:authorize="hasRole('ADMIN')">Update</th>
+                <th scope="col" sec:authorize="hasRole('ADMIN')">Delete</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="company : ${companies}">
+                <td th:text="${company.id}">1</td>
+                <td><a th:href="@{/companies/{id}(id=${company.id})}"
+                       th:text="${company.name}">Company</a></td>
+                <td>
+                    <img th:if="${company.image != null and !#strings.isEmpty(company.image)}"
+                         th:src="${company.image}" th:alt="${company.name} + ' logo'"
+                         style="width: 72px; height: 64px; object-fit: contain;">
+                    <span th:if="${company.image == null or #strings.isEmpty(company.image)}"
+                          class="text-secondary">No image</span>
+                </td>
+                <td sec:authorize="hasRole('ADMIN')">
+                    <a class="btn btn-link p-1 text-info" style="line-height: 1"
+                       th:href="@{/companies/{id}/edit(id=${company.id})}"
+                       th:aria-label="'Edit ' + ${company.name}" title="Edit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
+                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                             stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M12 20H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h10"/>
+                            <path d="m16 3 5 5L10 19l-5 1 1-5L16 3Z"/>
+                        </svg>
+                    </a>
+                </td>
+                <td sec:authorize="hasRole('ADMIN')">
+                    <form th:action="@{/companies/{id}/delete(id=${company.id})}"
+                          method="post" class="m-0">
+                        <button class="btn btn-link p-1 text-primary" style="line-height: 1" type="submit"
+                                th:aria-label="'Delete ' + ${company.name}" title="Delete"
+                                onclick="return confirm('Delete this company? Its employees will remain, without a company assigned.');">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"
+                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                 stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6"/>
+                                <path d="M10 10v6m4-6v6"/>
+                            </svg>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(companies)}">
+                <td colspan="5" class="text-secondary py-4">No companies yet. Use + to add one.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</body>
+</html>
